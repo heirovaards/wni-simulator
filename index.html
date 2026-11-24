@@ -128,6 +128,8 @@ small.note{display:block;color:var(--mute);font-size:13px;margin-top:10px}
 .sbox label.ck{display:flex;gap:8px;align-items:flex-start;margin:8px 0 0;font-size:14px}
 .swapgrid .arrow{align-self:center}
 @media(max-width:600px){.swapgrid{grid-template-columns:minmax(0,1fr)}}
+.pc.out{opacity:.45;filter:grayscale(1);cursor:default;box-shadow:3px 3px 0 var(--line)}.pc.out .cash{text-decoration:line-through}
+.pcw{display:flex;flex-direction:column;gap:8px;min-width:0}.pcw>.pc{flex:1}.pcw>.btn{width:100%}
 </style>
 </head>
 <body>
@@ -181,6 +183,7 @@ small.note{display:block;color:var(--mute);font-size:13px;margin-top:10px}
      </div>
      <label class="chk"><input type="checkbox" id="hPinjol" checked><span>Pakai pinjol (kalau dimatikan, tab Pinjol tidak muncul)</span></label>
      <label class="chk"><input type="checkbox" id="hAset" checked><span>Pakai transaksi aset (tanah, rumah, gadai). Kalau mati, fokus ke transaksi uang saja</span></label>
+     <div class="row" id="hSubBox"><div><label for="hSub">Rumah subsidi sebelum Rumah OKB</label><select id="hSub"><option value="1">1 rumah subsidi</option><option value="2">2 rumah subsidi (di tanah yang sama)</option></select></div></div>
      <small class="note">Angka awal ini contoh. Samakan dengan buku aturan WNI Simulator kalian.</small>
     </div>
    </div>
@@ -201,7 +204,7 @@ small.note{display:block;color:var(--mute);font-size:13px;margin-top:10px}
  <section id="players" class="players ingame" aria-label="Pemain"></section>
 
  <nav class="tabs ingame" aria-label="Menu">
-  <a href="#home" data-tab="home">Beranda</a><a href="#bank" data-tab="bank">Transaksi</a><a href="#aset" data-tab="aset" id="tabAset">Aset</a><a href="#pinjol" data-tab="pinjol" id="tabPinjol">Pinjol</a><a href="#riwayat" data-tab="riwayat">Riwayat</a><a href="#atur" data-tab="atur">Atur</a>
+  <a href="#home" data-tab="home">Beranda</a><a href="#bank" data-tab="bank">Transaksi</a><a href="#aset" data-tab="aset" id="tabAset">Aset</a><a href="#swap" data-tab="swap">Swap</a><a href="#pinjol" data-tab="pinjol" id="tabPinjol">Pinjol</a><a href="#riwayat" data-tab="riwayat">Riwayat</a><a href="#atur" data-tab="atur">Atur</a>
  </nav>
 
  <main>
@@ -224,27 +227,6 @@ small.note{display:block;color:var(--mute);font-size:13px;margin-top:10px}
     <button class="btn red xl" data-act="transfer" id="tBtn" type="button">Kirim</button>
    </div>
 
-   <div class="card" id="swapCard">
-    <h2>Swap</h2>
-    <p class="hint">Tukar uang dan aset antara 2 pemain. Aset yang digadai tidak bisa ikut.</p>
-    <div class="pick" id="pkSm" role="group" aria-label="Jenis swap"></div>
-    <small class="note" id="sNote" style="margin-top:6px">Tanah = aset yang belum dibangun. Aset = termasuk Rumah Subsidi dan Rumah OKB.</small>
-    <div class="stepl"><b>1</b>Pemain pertama</div>
-    <div class="pick" id="pkS1" role="group" aria-label="Pemain pertama"></div>
-    <div class="stepl"><b>2</b>Pemain kedua</div>
-    <div class="pick" id="pkS2" role="group" aria-label="Pemain kedua"></div>
-    <div class="stepl"><b>3</b>Apa yang ditukar?</div>
-    <div class="swapgrid">
-     <div class="sbox" id="sSide1"><small>Memberi</small><b id="sWho1"></b> <span class="t" id="sBal1"></span>
-      <label for="sM1">Uang</label><input id="sM1" class="money" inputmode="numeric" placeholder="0"><div id="sL1"></div></div>
-     <div class="arrow">⇄</div>
-     <div class="sbox" id="sSide2"><small>Memberi</small><b id="sWho2"></b> <span class="t" id="sBal2"></span>
-      <label for="sM2">Uang</label><input id="sM2" class="money" inputmode="numeric" placeholder="0"><div id="sL2"></div></div>
-    </div>
-    <div class="preview" id="sPrev"></div>
-    <div class="warn" id="sWarn" hidden></div>
-    <button class="btn red xl" data-act="swapDo" type="button" style="margin-top:12px">Tukar sekarang</button>
-   </div>
    </div>
 
    <div class="stackc">
@@ -281,6 +263,31 @@ small.note{display:block;color:var(--mute);font-size:13px;margin-top:10px}
    </div>
   </div></section>
 
+  <!-- SWAP -->
+  <section data-view="swap"><div class="grid" style="grid-template-columns:minmax(0,1fr);max-width:820px">
+   <div class="card" id="swapCard">
+    <h2>Swap</h2>
+    <p class="hint">Tukar uang dan aset antara 2 pemain. Aset yang digadai tidak bisa ikut.</p>
+    <div class="pick" id="pkSm" role="group" aria-label="Jenis swap"></div>
+    <small class="note" id="sNote" style="margin-top:6px">Tanah = aset yang belum dibangun. Aset = termasuk Rumah Subsidi dan Rumah OKB.</small>
+    <div class="stepl"><b>1</b>Pemain pertama</div>
+    <div class="pick" id="pkS1" role="group" aria-label="Pemain pertama"></div>
+    <div class="stepl"><b>2</b>Pemain kedua</div>
+    <div class="pick" id="pkS2" role="group" aria-label="Pemain kedua"></div>
+    <div class="stepl"><b>3</b>Apa yang ditukar?</div>
+    <div class="swapgrid">
+     <div class="sbox" id="sSide1"><small>Memberi</small><b id="sWho1"></b> <span class="t" id="sBal1"></span>
+      <label for="sM1">Uang</label><input id="sM1" class="money" inputmode="numeric" placeholder="0"><div id="sL1"></div></div>
+     <div class="arrow">⇄</div>
+     <div class="sbox" id="sSide2"><small>Memberi</small><b id="sWho2"></b> <span class="t" id="sBal2"></span>
+      <label for="sM2">Uang</label><input id="sM2" class="money" inputmode="numeric" placeholder="0"><div id="sL2"></div></div>
+    </div>
+    <div class="preview" id="sPrev"></div>
+    <div class="warn" id="sWarn" hidden></div>
+    <button class="btn red xl" data-act="swapDo" type="button" style="margin-top:12px">Tukar sekarang</button>
+   </div>
+  </div></section>
+
   <!-- PINJOL -->
   <section data-view="pinjol"><div class="grid">
    <div class="card">
@@ -304,7 +311,7 @@ small.note{display:block;color:var(--mute);font-size:13px;margin-top:10px}
    <div class="card">
     <h2>Beli tanah</h2>
     <p class="hint">Aset dibangun bertahap. Semua dimulai dari tanah, lalu naik dari daftar aset.</p>
-    <div class="lad" aria-label="Tahapan aset"><span class="on">Tanah</span><i>→</i><span>Rumah Subsidi</span><i>→</i><span>Rumah OKB</span></div>
+    <div class="lad" id="ladAset" aria-label="Tahapan aset"><span class="on">Tanah</span><i>→</i><span>Rumah Subsidi</span><i>→</i><span>Rumah OKB</span></div>
     <label for="aOwner">Pemilik</label><select id="aOwner"></select>
     <label for="aKota">Kota / lokasi</label><select id="aKota"><option value="">Pilih kota…</option><optgroup label="Jawa"><option data-p="4000000">Jakarta</option><option data-p="4000000">Solo</option><option data-p="4000000">Bandung</option><option data-p="4000000">Jogja</option><option data-p="4000000">Surabaya</option></optgroup><optgroup label="Sumatra"><option data-p="1500000">Aceh</option><option data-p="1500000">Medan</option><option data-p="1500000">Padang</option><option data-p="1500000">Lampung</option><option data-p="1500000">Batam</option></optgroup><optgroup label="Kalimantan"><option data-p="2000000">Pontianak</option><option data-p="2000000">Palangkaraya</option><option data-p="2000000">Balikpapan</option><option data-p="2000000">Samarinda</option><option data-p="2000000">IKN</option></optgroup><optgroup label="Sulawesi"><option data-p="2500000">Makasar</option><option data-p="2500000">Manado</option><option data-p="2500000">Palu</option><option data-p="2500000">Gorontalo</option><option data-p="2500000">Kendari</option></optgroup><optgroup label="Papua"><option data-p="3000000">Sorong</option><option data-p="3000000">Jayapura</option><option data-p="3000000">Manokwari</option><option data-p="3000000">Timika</option><option data-p="3000000">Merauke</option></optgroup><option value="__x">Lainnya (ketik sendiri)</option></select><input id="aName" placeholder="Nama petak" hidden style="margin-top:8px" maxlength="24">
     <div class="row">
@@ -369,8 +376,8 @@ small.note{display:block;color:var(--mute);font-size:13px;margin-top:10px}
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const KEY='wni-sim-bank-v2',COLORS=['#E3262E','#2F7BE5','#1F9A5A','#8E5BD8','#F08A24','#1d1b16'];
 const NAMES=['Andi','Sari','Budi','Putri','Dimas','Rina'];
-const DEF={start:15000000,gov:500000000,fromGov:true,gaji:2000000,pajak:1000000,bunga:20,pinjol:true,aset:true};
-const fmt=n=>(n<0?'−':'')+'Rp '+Math.abs(Math.round(n)).toLocaleString('id-ID');
+const DEF={start:15000000,gov:500000000,fromGov:true,gaji:2000000,pajak:1000000,bunga:20,pinjol:true,aset:true,subsidi:1};
+const fmt=n=>(n<0?'−':'')+'Rp '+Math.abs(Math.round(n)).toLocaleString('id-ID');
 const num=v=>+String(v).replace(/[^\d]/g,'')||0;
 const dec=v=>{const x=parseFloat(String(v).replace(',','.'));return isFinite(x)&&x>0?x:0};
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -378,20 +385,24 @@ const now=()=>new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-di
 const GOV='bank';
 let S=null;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 if(!S||!Array.isArray(S.players)||S.players.length<2)S=null;else try{S=clean(S)}catch(e){S=null}
-function clean(d){const pl=d.players.map((p,i)=>({id:Number.isInteger(p.id)?p.id:i,name:String(p.name||'Pemain '+(i+1)).slice(0,16),color:/^#[0-9a-f]{6}$/i.test(p.color)?p.color:COLORS[i%COLORS.length],cash:+p.cash||0,debt:+p.debt||0}));
- const ok=a=>a&&typeof a.price==='number'&&typeof a.name==='string'&&pl.some(p=>p.id===a.owner);
- return {...d,players:pl,assets:(Array.isArray(d.assets)?d.assets:[]).filter(ok),log:(Array.isArray(d.log)?d.log:[]).filter(l=>l&&Array.isArray(l.who)),cfg:{...DEF,...(d.cfg||{})},gov:+d.gov||0,active:+d.active||0,seq:+d.seq||1,undo:Array.isArray(d.undo)?d.undo:[]}}
+function clean(d){const pl=d.players.map((p,i)=>{const o=!!p.out;return{id:Number.isInteger(p.id)?p.id:i,name:String(p.name||'Pemain '+(i+1)).slice(0,16),color:/^#[0-9a-f]{6}$/i.test(p.color)?p.color:COLORS[i%COLORS.length],cash:o?0:+p.cash||0,debt:o?0:+p.debt||0,out:o}});
+ const ok=a=>a&&typeof a.price==='number'&&typeof a.name==='string'&&pl.some(p=>p.id===a.owner&&!p.out);
+ const as=(Array.isArray(d.assets)?d.assets:[]).filter(ok).map(a=>({...a,land:typeof a.land==='number'?a.land:a.price}));
+ const cfg={...DEF,...(d.cfg||{})};if(cfg.subsidi!==2)cfg.subsidi=1;
+ return {...d,players:pl,assets:as,log:(Array.isArray(d.log)?d.log:[]).filter(l=>l&&Array.isArray(l.who)),cfg,gov:+d.gov||0,active:+d.active||0,seq:+d.seq||1,undo:Array.isArray(d.undo)?d.undo:[]}}
 const save=()=>{try{S?localStorage.setItem(KEY,JSON.stringify(S)):localStorage.removeItem(KEY)}catch(e){}};
 const P=id=>S.players.find(p=>p.id===id),nm=id=>id===GOV?'Pemerintah':P(id).name,val=x=>x===GOV?GOV:+x;
+const live=()=>S.players.filter(p=>!p.out);
 const aval=a=>a.gadai?a.price*.45:a.price; // gadai: terima 50%, tebus 55%, sisa nilai 45%
-const LV=['Tanah','Rumah Subsidi','Rumah OKB'];
-const lvl=a=>a.level!=null?a.level:Math.max(0,LV.indexOf(a.type));
-const ladder=a=>`<div class="lad">${LV.map((t,i)=>`<span class="${i===lvl(a)?'on':i<lvl(a)?'done':''}">${t}</span>`).join('<i>→</i>')}${a.gadai?'<span class="on" style="background:var(--ink);color:var(--card)">Digadai</span>':''}</div>`;
+const LVn=()=>S&&S.cfg.subsidi===2?['Tanah','Rumah Subsidi 1','Rumah Subsidi 2','Rumah OKB']:['Tanah','Rumah Subsidi','Rumah OKB'];
+const maxL=()=>LVn().length-1;
+const lvl=a=>a.level!=null?a.level:Math.max(0,['Tanah','Rumah Subsidi','Rumah OKB'].indexOf(a.type));
+const ladder=a=>`<div class="lad">${LVn().map((t,i)=>`<span class="${i===lvl(a)?'on':i<lvl(a)?'done':''}">${t}</span>`).join('<i>→</i>')}${a.gadai?'<span class="on" style="background:var(--ink);color:var(--card)">Digadai</span>':''}</div>`;
 const unl=()=>S&&S.cfg.unlimited;
 const govTxt=()=>unl()?'Tak terbatas':fmt(S.gov);
 const UI={from:0,to:'bank',q:0,p:0,a:0,s1:0,s2:1,sm:0,sel:[]};
 const tokOf=id=>id==='bank'?{c:'#E3262E',l:'P'}:{c:P(id).color,l:(P(id).name[0]||'?').toUpperCase()};
-function pick(el,key,gov,dis){$(el).innerHTML=(gov?['bank']:[]).concat(S.players.map(p=>p.id)).map(v=>{const t=tokOf(v);
+function pick(el,key,gov,dis){$(el).innerHTML=(gov?['bank']:[]).concat(live().map(p=>p.id)).map(v=>{const t=tokOf(v);
  return `<button type="button" class="pk ${UI[key]===v?'on':''}" data-pick="${key}" data-v="${v}" style="--c:${t.c}" ${dis===v?'disabled':''} aria-pressed="${UI[key]===v}"><span class="tok" style="background:${t.c}">${esc(t.l)}</span>${esc(nm(v))}</button>`}).join('')}
 const worth=p=>p.cash+S.assets.filter(a=>a.owner===p.id).reduce((s,a)=>s+aval(a),0)-p.debt;
 const setMoney=(el,n)=>el.value=n?n.toLocaleString('id-ID'):'';
@@ -401,16 +412,16 @@ function liveMoney(el){const on=document.activeElement===el,d=el.value.slice(0,e
 /* ---------- Beranda ---------- */
 const H={count:5,players:NAMES.map((n,i)=>({name:n,color:COLORS[i]}))};
 function homeFill(){const c=S?S.cfg:DEF;setMoney($('#hStart'),c.start);setMoney($('#hGov'),c.unlimited?0:c.gov);$('#hFrom').checked=c.fromGov!==false;
- setMoney($('#hGaji'),c.gaji);setMoney($('#hPajak'),c.pajak);$('#hBunga').value=c.bunga;$('#hPinjol').checked=c.pinjol!==false;$('#hAset').checked=c.aset!==false;
+ setMoney($('#hGaji'),c.gaji);setMoney($('#hPajak'),c.pajak);$('#hBunga').value=c.bunga;$('#hPinjol').checked=c.pinjol!==false;$('#hAset').checked=c.aset!==false;$('#hSub').value=String(c.subsidi===2?2:1);
  if(S){H.count=Math.min(5,Math.max(2,S.players.length));S.players.forEach((p,i)=>H.players[i]={name:p.name,color:p.color})}}
 function homePlayers(){
   $('#hPlayers').innerHTML=H.players.slice(0,H.count).map((p,i)=>`<div class="setp"><span class="tok" style="background:${p.color}">${i+1}</span>
   <input id="hn${i}" value="${esc(p.name)}" maxlength="16" aria-label="Nama pemain ${i+1}"><input type="color" id="hc${i}" value="${p.color}" aria-label="Warna pemain ${i+1}"></div>`).join('');
  homeSum()}
-function homeCfg(){const g=num($('#hGov').value);return{start:num($('#hStart').value),gov:g,unlimited:!g,fromGov:!!g&&$('#hFrom').checked,gaji:num($('#hGaji').value),pajak:num($('#hPajak').value),bunga:dec($('#hBunga').value),pinjol:$('#hPinjol').checked,aset:$('#hAset').checked}}
+function homeCfg(){const g=num($('#hGov').value);return{start:num($('#hStart').value),gov:g,unlimited:!g,fromGov:!!g&&$('#hFrom').checked,gaji:num($('#hGaji').value),pajak:num($('#hPajak').value),bunga:dec($('#hBunga').value),pinjol:$('#hPinjol').checked,aset:$('#hAset').checked,subsidi:+$('#hSub').value===2?2:1}}
 function homeSum(){
  const c=homeCfg(),n=H.count,pl=c.start*n,gov=c.fromGov?c.gov-pl:c.gov,total=gov+pl,ps=H.players.slice(0,n);
- $('#hFromRow').hidden=c.unlimited;$('#hBungaBox').hidden=!c.pinjol;
+ $('#hFromRow').hidden=c.unlimited;$('#hBungaBox').hidden=!c.pinjol;$('#hSubBox').hidden=!c.aset;
  $('#hCount').textContent=n;$('#hLadN').textContent=n+' pemain';$('#cntM').disabled=n<=2;$('#cntP').disabled=n>=5;
  const seg=[{l:'Kas pemerintah',v:c.unlimited?pl*2:Math.max(gov,0),c:'#E3262E'},...ps.map(p=>({l:p.name||'Pemain',v:c.start,c:p.color}))];
  const T=seg.reduce((s,x)=>s+x.v,0)||1;
@@ -423,12 +434,12 @@ function homeSum(){
  $('#startNote').textContent=S?'Game yang sedang berjalan akan diganti. Klik dua kali untuk memastikan.':''}
 $('#hPlayers').addEventListener('input',e=>{const m=e.target.id.match(/^h([nc])(\d)$/);if(!m)return;const p=H.players[+m[2]];
  if(m[1]==='n')p.name=e.target.value;else{p.color=e.target.value;e.target.previousElementSibling.previousElementSibling.style.background=p.color}homeSum()});
-['hStart','hGov','hGaji','hPajak','hBunga','hFrom','hPinjol','hAset'].forEach(i=>$('#'+i).addEventListener('input',homeSum));
+['hStart','hGov','hGaji','hPajak','hBunga','hFrom','hPinjol','hAset','hSub'].forEach(i=>$('#'+i).addEventListener('input',homeSum));
 $('#hFrom').addEventListener('change',homeSum);
 
 function startGame(){const c=homeCfg();
  S={cfg:c,gov:c.unlimited?0:c.fromGov?c.gov-c.start*H.count:c.gov,active:0,seq:1,undo:[],assets:[],
-  players:H.players.slice(0,H.count).map((p,i)=>({id:i,name:p.name.trim()||'Pemain '+(i+1),color:p.color,cash:c.start,debt:0})),
+  players:H.players.slice(0,H.count).map((p,i)=>({id:i,name:p.name.trim()||'Pemain '+(i+1),color:p.color,cash:c.start,debt:0,out:false})),
   log:[{id:0,t:now(),kind:'sys',text:`Game dimulai: ${H.count} pemain, modal ${fmt(c.start)} per orang, kas pemerintah ${c.unlimited?'tak terbatas':fmt(c.fromGov?c.gov-c.start*H.count:c.gov)}`,amt:0,who:[]}]};
  save();render();location.hash='#bank';route();toast('Game dimulai. Selamat jadi WNI!')}
 
@@ -440,50 +451,69 @@ function can(from,amt){if(from===GOV){if(unl()||S.gov>=amt)return true;toast(`Ka
  if(P(from).cash>=amt)return true;toast(`Saldo ${P(from).name} kurang ${fmt(amt-P(from).cash)}. Jual atau gadai aset dulu.`,1);return false}
 function move(from,to,amt){if(from===GOV){if(!unl())S.gov-=amt}else P(from).cash-=amt;if(to===GOV){if(!unl())S.gov+=amt}else P(to).cash+=amt}
 function commit(msg){const u=snapped;snapped=0;save();render();if(msg)toast(msg,0,u)}
-let tt;function toast(msg,bad,u){$('#tMsg').textContent=msg;const t=$('#toast');t.className=bad?'bad':'';t.style.display='flex';$('#tUndo').style.display=bad||!u||!S||!S.undo.length?'none':'';clearTimeout(tt);tt=setTimeout(()=>t.style.display='none',bad?4200:3200)}
+let tt;function toast(msg,bad,u){$('#tMsg').textContent=msg;const t=$('#toast');t.className=bad?'bad':'';t.style.display='flex';$('#tUndo').style.display=bad||!u||!S||!S.undo.length?'none':'';clearTimeout(tt);tt=setTimeout(()=>t.style.display='none',bad?5200:3200)}
 function undo(){const u=S&&S.undo.pop();if(!u)return toast('Belum ada yang bisa dibatalkan',1);const d=JSON.parse(u);S.players=d.players;S.assets=d.assets;S.gov=d.gov;if(d.log)S.log=d.log;else{S.log=S.log.filter(l=>l.id<d.seq);S.seq=d.seq}commit('Aksi terakhir dibatalkan');$('#tUndo').style.display='none'}
+
+/* pemain yang tidak mampu bayar: bayar semua saldo lalu keluar (kartu diredupkan, aset dilepas) */
+let bustKey='',bustT=0;
+function bustOk(key,p,short){const k=key+'|'+p.id+'|'+short;if(bustKey===k&&Date.now()-bustT<6000){bustKey='';return true}bustKey=k;bustT=Date.now();
+ toast(`Saldo ${p.name} kurang ${fmt(short)}. Klik sekali lagi untuk bayar semua dan keluar dari game.`,1);return false}
+const okPay=(key,id,amt)=>{const sh=amt-P(id).cash;return sh<=0||bustOk(key,P(id),sh)};
+function payFrom(id,to,amt){const p=P(id),paid=Math.min(amt,p.cash);move(id,to,paid);return{paid,bust:amt>p.cash}}
+const winNote=()=>{const l=live();return l.length===1?` · ${l[0].name} tinggal sendirian, selamat!`:''};
+function eliminate(id,why){const p=P(id),c=p.cash;if(c>0)move(id,GOV,c);S.assets=S.assets.filter(a=>a.owner!==id);p.cash=0;p.debt=0;p.out=true;
+ log('sys',`${p.name} keluar dari game${why?' ('+why+')':''}. ${c>0?'Sisa saldo '+fmt(c)+' masuk ke Pemerintah':'Tidak ada sisa saldo'}; aset dilepas (tanahnya bisa dibeli lagi), utang dihapus`,c,[id],c>0?id:-1)}
+
 function transfer(from,to,amt,note){
  if(!(amt>0))return toast('Isi jumlahnya dulu',1);
  if(from===to)return toast('Pengirim dan penerima tidak boleh sama',1);
- if(!can(from,amt))return;
- snap();move(from,to,amt);log('tf',`${nm(from)} → ${nm(to)}${note?' · '+note:''}`,amt,[from,to].filter(x=>x!==GOV),from===GOV?-1:from);
- commit(`${fmt(amt)} dari ${nm(from)} ke ${nm(to)}`);return true}
+ if(from===GOV){if(!can(GOV,amt))return}else if(!okPay('tf',from,amt))return;
+ snap();const paid=from===GOV?amt:Math.min(amt,P(from).cash),bust=from!==GOV&&paid<amt;
+ move(from,to,paid);log('tf',`${nm(from)} → ${nm(to)}${note?' · '+note:''}${bust?' (bayar semua saldo)':''}`,paid,[from,to].filter(x=>x!==GOV),from===GOV?-1:from);
+ if(bust)eliminate(from,'saldo kurang');
+ commit(bust?`${nm(from)} bayar semua ${fmt(paid)} ke ${nm(to)} dan keluar dari game`+winNote():`${fmt(paid)} dari ${nm(from)} ke ${nm(to)}`);return true}
 
 const CH=[[50000,'+50rb'],[100000,'+100rb'],[500000,'+500rb'],[1000000,'+1jt'],[5000000,'+5jt']];
 $$('.chips').forEach(c=>c.innerHTML=CH.map(([v,l])=>`<button class="btn sm" type="button" data-add="${v}">${l}</button>`).join('')+'<button class="btn sm" type="button" data-add="0">Nol</button>');
 $$('.money').forEach(el=>el.addEventListener('input',()=>{liveMoney(el);if(el.id==='tAmt')prev();if(/^sM/.test(el.id))sPrev()}));
 function prev(){if(!S)return;const f=UI.from,t=UI.to,a=num($('#tAmt').value);
+ const sp=f!==GOV&&a>P(f).cash,sg=f===GOV&&!unl()&&a>S.gov,eff=sp?P(f).cash:a;
  const side=(id,d,lbl)=>{const tk=tokOf(id);if(id===GOV&&unl())return `<div class="side" style="--c:${tk.c}"><small>${lbl}</small><b>Pemerintah</b><span>Kas tak terbatas</span></div>`;
   const bal=id===GOV?S.gov:P(id).cash,af=bal+d;return `<div class="side" style="--c:${tk.c}"><small>${lbl}</small><b>${esc(nm(id))}</b><span>Saldo ${fmt(bal)}</span><span class="after ${d<0?'neg':d>0?'pos':''}">→ ${fmt(af)}</span></div>`};
- const short=f!==GOV&&a>P(f).cash||f===GOV&&!unl()&&a>S.gov;
- $('#tFlow').innerHTML=f===t?'<div class="preview" style="grid-column:1/-1;margin:0">Pembayar dan penerima harus berbeda.</div>':side(f,-a,'Bayar')+`<div class="arrow">→<br><small>${a?fmt(a):'Rp 0'}</small></div>`+side(t,a,'Terima')+(short?'<div class="warn" style="grid-column:1/-1;margin:0">Saldo pembayar tidak cukup.</div>':'');
- $('#tBtn').textContent=f===t?'Pilih pemain yang berbeda':a?`Kirim ${fmt(a)} ke ${nm(t)}`:'Isi jumlah dulu'}
+ const warn=sp?`Saldo ${P(f).name} kurang ${fmt(a-eff)}. Dia bayar semua yang ada (${fmt(eff)}) lalu keluar dari game.`:sg?'Kas pemerintah tidak cukup.':'';
+ $('#tFlow').innerHTML=f===t?'<div class="preview" style="grid-column:1/-1;margin:0">Pembayar dan penerima harus berbeda.</div>':side(f,-eff,'Bayar')+`<div class="arrow">→<br><small>${eff?fmt(eff):'Rp 0'}</small></div>`+side(t,eff,'Terima')+(warn?`<div class="warn" style="grid-column:1/-1;margin:0">${esc(warn)}</div>`:'');
+ $('#tBtn').textContent=f===t?'Pilih pemain yang berbeda':sp?`Bayar semua ${fmt(eff)}, ${P(f).name} keluar`:a?`Kirim ${fmt(a)} ke ${nm(t)}`:'Isi jumlah dulu'}
 
 function render(){
  if(!S){$('#resume').hidden=true;return}
- const pl=S.players;if(!pl.some(p=>p.id===S.active))S.active=pl[0].id;
- $('#resume').hidden=false;$('#resumeInfo').textContent=`${pl.length} pemain · kas pemerintah ${govTxt().toLowerCase()}`;
- const ranks=[...pl].sort((a,b)=>worth(b)-worth(a)).map(p=>p.id);
+ const pl=S.players,lp=live();if(!lp.some(p=>p.id===S.active))S.active=lp[0].id;
+ $('#resume').hidden=false;$('#resumeInfo').textContent=`${lp.length} pemain · kas pemerintah ${govTxt().toLowerCase()}`;
+ const ranks=[...lp].sort((a,b)=>worth(b)-worth(a)).map(p=>p.id);
  $('#players').innerHTML=`<div class="pc gov"><span class="pn"><span class="tok" style="background:#fff;color:var(--red)">P</span>Kas Pemerintah</span><b class="cash">${govTxt()}</b><span class="meta">Pajak, pembelian &amp; cicilan masuk ke sini</span></div>`+
-  pl.map(p=>{const n=S.assets.filter(a=>a.owner===p.id).length;
-  return `<button type="button" class="pc ${S.active===p.id?'on':''}" data-p="${p.id}" style="--c:${p.color}" aria-pressed="${S.active===p.id}">
+  pl.map(p=>{if(p.out)return `<div class="pc out" style="--c:${p.color}"><span class="pn"><span class="tok">${esc((p.name[0]||'?').toUpperCase())}</span>${esc(p.name)}</span><b class="cash">${fmt(0)}</b><span class="meta">Keluar dari game</span></div>`;
+  const n=S.assets.filter(a=>a.owner===p.id).length;
+  return `<div class="pcw"><button type="button" class="pc ${S.active===p.id?'on':''}" data-p="${p.id}" style="--c:${p.color}" aria-pressed="${S.active===p.id}">
   <span class="rank">#${ranks.indexOf(p.id)+1}</span><span class="pn"><span class="tok">${esc((p.name[0]||'?').toUpperCase())}</span>${esc(p.name)}</span>
-  <b class="cash ${p.cash<0?'neg':''}">${fmt(p.cash)}</b><span class="meta">${S.cfg.aset===false?'':n+' aset · '}bersih ${fmt(worth(p))}</span>${p.debt?`<span class="debt">Pinjol ${fmt(p.debt)}</span>`:''}</button>`}).join('');
- ['from','q','p','a'].forEach(k=>{if(UI[k]!==GOV&&!pl.some(x=>x.id===UI[k]))UI[k]=pl[0].id});if(UI.to!==GOV&&!pl.some(x=>x.id===UI.to))UI.to=GOV;if(UI.to===UI.from)UI.to=UI.from===GOV?pl[0].id:GOV;
+  <b class="cash ${p.cash<0?'neg':''}">${fmt(p.cash)}</b><span class="meta">${S.cfg.aset===false?'':n+' aset · '}bersih ${fmt(worth(p))}</span>${p.debt?`<span class="debt">Pinjol ${fmt(p.debt)}</span>`:''}</button>${S.active===p.id&&lp.length>2?`<button type="button" class="btn red sm" data-act="rmPlayer" data-pid="${p.id}">Keluarkan ${esc(p.name)}</button>`:''}</div>`}).join('');
+ ['from','q','p','a'].forEach(k=>{if(UI[k]!==GOV&&!lp.some(x=>x.id===UI[k]))UI[k]=lp[0].id});if(UI.to!==GOV&&!lp.some(x=>x.id===UI.to))UI.to=GOV;if(UI.to===UI.from)UI.to=UI.from===GOV?lp[0].id:GOV;
  pick('#pkFrom','from',1);pick('#pkTo','to',1,UI.from);pick('#pkQ','q',0);pick('#pkP','p',0);pick('#pkA','a',0);
  const a=P(UI.p),q=P(UI.q),c=S.cfg;
  $('#gajiBtn').textContent=`Lewat Start: ${q.name} terima +${fmt(c.gaji)}`;$('#pajakBtn').textContent=`Pajak: ${q.name} bayar −${fmt(c.pajak)}`;
  $('#pjName').textContent=a.name;$('#pjDebt').textContent=fmt(a.debt);$('#pjDebt').className='big '+(a.debt?'neg':'');
  $('#bungaLbl').textContent=c.bunga+'%';
- const pjOn=c.pinjol!==false;$('#tabPinjol').hidden=!pjOn&&!pl.some(x=>x.debt);$('#pinjamBtn').hidden=!pjOn;
+ const pjOn=c.pinjol!==false;$('#tabPinjol').hidden=!pjOn&&!lp.some(x=>x.debt);$('#pinjamBtn').hidden=!pjOn;
  const asOn=c.aset!==false;$('#tabAset').hidden=!asOn;$('#pkA').closest('.card').hidden=!asOn;$('#pkSm').hidden=!asOn;$('#sNote').hidden=!asOn;
- const opts=gov=>(gov?'<option value="bank">Pemerintah</option>':'')+pl.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');
- const keep=(id,gov,def)=>{const el=$('#'+id),v=el.value;el.innerHTML=opts(gov);el.value=v!==''&&[...el.options].some(o=>o.value===v)?v:String(def)};
+ $('#ladAset').innerHTML=LVn().map((t,i)=>`<span class="${i?'':'on'}">${t}</span>`).join('<i>→</i>');
+ const opts=(gov,L)=>(gov?'<option value="bank">Pemerintah</option>':'')+L.map(p=>`<option value="${p.id}">${esc(p.name)}${p.out?' (keluar)':''}</option>`).join('');
+ const keep=(id,gov,def)=>{const el=$('#'+id),v=el.value;el.innerHTML=opts(gov,lp);el.value=v!==''&&[...el.options].some(o=>o.value===v)?v:String(def)};
  keep('aOwner',0,S.active);
- const lf=$('#lFilter'),lv=lf.value;lf.innerHTML='<option value="all">Semua</option>'+opts(0);lf.value=[...lf.options].some(o=>o.value===lv)?lv:'all';
+ const lf=$('#lFilter'),lv=lf.value;lf.innerHTML='<option value="all">Semua</option>'+opts(0,pl);lf.value=[...lf.options].some(o=>o.value===lv)?lv:'all';
+ const own=new Map(S.assets.map(x=>[key(x.name),x]));
+ $$('#aKota,#xKota').forEach(sel=>{[...sel.querySelectorAll('option[data-p]')].forEach(o=>{const n=o.dataset.n||(o.dataset.n=o.textContent);o.value=n;const x=own.get(key(n));o.disabled=!!x;o.textContent=x?`${n} · milik ${P(x.owner).name}`:n});if(sel.selectedOptions[0]&&sel.selectedOptions[0].disabled)sel.value=''});
  prev();renderAssets('#aList','','#aSum');renderAssets('#xList','x','#xSum',UI.a);renderLog();renderSet();renderSwap();route()}
 
-
+const ALIAS={makassar:'makasar',yogyakarta:'jogja',yogya:'jogja',jogjakarta:'jogja',surakarta:'solo',ibukotanusantara:'ikn'};
+const key=n=>{const k=String(n).toLowerCase().replace(/[^a-z0-9]/g,'');return ALIAS[k]||k};
 const lok=q=>{const s=$('#'+q+'Kota').value;return s==='__x'?$('#'+q+'Name').value.trim():s};
 const SM=['Uang saja','Uang + tanah','Uang + tanah + aset'];
 const sOk=a=>!a.gadai&&(UI.sm===2||(UI.sm===1&&lvl(a)===0));
@@ -491,7 +521,7 @@ const sGive=(id)=>UI.sel.map(i=>S.assets.find(x=>x.id===i)).filter(x=>x&&x.owner
 const sTxt=(m,L)=>[m?fmt(m):'',...L.map(x=>x.name)].filter(Boolean).join(' + ')||'tidak ada';
 function renderSwap(){
  if(S.cfg.aset===false)UI.sm=0;
- const ids=S.players.map(x=>x.id);
+ const ids=live().map(x=>x.id);
  if(!ids.includes(UI.s1))UI.s1=ids.find(i=>i!==UI.s2);
  if(!ids.includes(UI.s2)||UI.s2===UI.s1)UI.s2=ids.find(i=>i!==UI.s1);
  $('#pkSm').innerHTML=SM.map((l,i)=>`<button type="button" class="pk ${UI.sm===i?'on':''}" data-pick="sm" data-v="${i}" style="--c:#E3262E;padding-left:14px" aria-pressed="${UI.sm===i}">${l}</button>`).join('');
@@ -501,28 +531,29 @@ function renderSwap(){
   $('#sSide'+k).style.setProperty('--c',p.color);$('#sWho'+k).textContent=p.name;$('#sBal'+k).textContent=fmt(p.cash);
   const mine=S.assets.filter(a=>a.owner===id),ok=mine.filter(sOk),lock=mine.length-ok.length;
   $('#sL'+k).innerHTML=UI.sm===0?'<small class="note">Mode uang saja, tanpa aset.</small>'
-   :(ok.map(a=>`<label class="ck"><input type="checkbox" data-sel="${a.id}" ${UI.sel.includes(a.id)?'checked':''}><span>${LV[lvl(a)]} · ${esc(a.name)} <span class="t">${fmt(a.price)}</span></span></label>`).join('')||'<small class="note">Tidak ada aset yang bisa ditukar.</small>')
+   :(ok.map(a=>`<label class="ck"><input type="checkbox" data-sel="${a.id}" ${UI.sel.includes(a.id)?'checked':''}><span>${LVn()[lvl(a)]} · ${esc(a.name)} <span class="t">${fmt(a.price)}</span></span></label>`).join('')||'<small class="note">Tidak ada aset yang bisa ditukar.</small>')
     +(lock?`<small class="note">${lock} aset tidak ikut (digadai${UI.sm===1?' atau sudah dibangun':''}).</small>`:'')});
  sPrev()}
 function sPrev(){if(!S)return;const a=P(UI.s1),b=P(UI.s2);if(!a||!b)return;
  const m1=num($('#sM1').value),m2=num($('#sM2').value),af1=a.cash+m2-m1,af2=b.cash+m1-m2;
  $('#sPrev').innerHTML=`<b>${esc(a.name)}</b> beri: ${esc(sTxt(m1,sGive(a.id)))}<br><b>${esc(b.name)}</b> beri: ${esc(sTxt(m2,sGive(b.id)))}<br>Saldo setelah swap: ${esc(a.name)} ${fmt(af1)}, ${esc(b.name)} ${fmt(af2)}`;
- const w=$('#sWarn');w.hidden=af1>=0&&af2>=0;w.textContent=af1<0?`Saldo ${a.name} tidak cukup.`:`Saldo ${b.name} tidak cukup.`}
+ const lo=af1<0?a:af2<0?b:null,w=$('#sWarn');w.hidden=!lo;if(lo)w.textContent=`Saldo ${lo.name} kurang. Kalau dilanjutkan, ${lo.name} bayar semua saldonya ke lawan swap, keluar dari game, dan aset tidak jadi ditukar.`}
 
 function renderAssets(host,pre,sumSel,only){
- const H=$(host),L=only==null?S.assets:S.assets.filter(a=>a.owner===only),tot=L.reduce((s,a)=>s+aval(a),0);
+ const H=$(host),L=only==null?S.assets:S.assets.filter(a=>a.owner===only),tot=L.reduce((s,a)=>s+aval(a),0),LV=LVn();
  const openK=new Set([...H.querySelectorAll('details[open]')].map(d=>d.dataset.k)),typed={};H.querySelectorAll('input[id]').forEach(i=>{if(/^x?[uh]\d/.test(i.id)&&i.value)typed[i.id]=i.value});
  $(sumSel).textContent=L.length?`${L.length} aset tercatat, total nilai ${fmt(tot)}`:'Belum ada aset.';
  if(!L.length){H.innerHTML=`<div class="empty">${only==null?'Belum ada aset. Catat tanah atau rumah pertama di form sebelah.':'Belum ada aset. Beli tanah di atas.'}</div>`;return}
- H.innerHTML=S.players.filter(p=>only==null||p.id===only).map(p=>{const mine=L.filter(a=>a.owner===p.id);if(!mine.length)return'';
+ H.innerHTML=live().filter(p=>only==null||p.id===only).map(p=>{const mine=L.filter(a=>a.owner===p.id);if(!mine.length)return'';
   return `<div class="own"><h3><span class="tok" style="background:${p.color};width:22px;height:22px;font-size:12px">${esc((p.name[0]||'?').toUpperCase())}</span>${esc(p.name)} <span class="t">· ${fmt(mine.reduce((s,a)=>s+aval(a),0))}</span></h3>`+
   mine.map(a=>`<div class="as"><div class="top"><b>${LV[lvl(a)]} · ${esc(a.name)}</b><span class="amt">${fmt(a.price)}</span></div>
    ${ladder(a)}
-   ${lvl(a)<2?`<div class="up"><input class="money" id="${pre}u${a.id}" inputmode="numeric" placeholder="Biaya bangun" value="${S.upCost&&S.upCost[lvl(a)]?S.upCost[lvl(a)].toLocaleString('id-ID'):''}" aria-label="Biaya bangun ${LV[lvl(a)+1]}"><button class="btn sm grn" data-act="upgrade" data-pre="${pre}" data-a="${a.id}" type="button" ${a.gadai?'disabled style="opacity:.4"':''}>Bangun ${LV[lvl(a)+1]}</button></div>`:'<div class="up"><span class="t">Sudah tahap tertinggi.</span></div>'}
+   ${lvl(a)<maxL()?`<div class="up"><input class="money" id="${pre}u${a.id}" inputmode="numeric" placeholder="Biaya bangun" value="${S.upCost&&S.upCost[lvl(a)]?S.upCost[lvl(a)].toLocaleString('id-ID'):''}" aria-label="Biaya bangun ${LV[lvl(a)+1]}"><button class="btn sm grn" data-act="upgrade" data-pre="${pre}" data-a="${a.id}" type="button" ${a.gadai?'disabled style="opacity:.4"':''}>Bangun ${LV[lvl(a)+1]}</button></div>`:'<div class="up"><span class="t">Sudah tahap tertinggi.</span></div>'}
    <details data-k="${pre}${a.id}"><summary>Aksi aset</summary><div class="acts">
     <div class="row"><input class="money" id="${pre}s${a.id}" inputmode="numeric" value="${a.price.toLocaleString('id-ID')}" aria-label="Harga jual ke pemerintah"><button class="btn sm" data-act="sell" data-pre="${pre}" data-a="${a.id}" type="button">Jual ke pemerintah</button></div>
-    <div class="row"><select id="${pre}m${a.id}" aria-label="Pembeli">${S.players.filter(q=>q.id!==p.id).map(q=>`<option value="${q.id}">${esc(q.name)}</option>`).join('')}</select>
-     <input class="money" id="${pre}h${a.id}" inputmode="numeric" placeholder="Harga (0 = gratis)" aria-label="Harga jual ke pemain"><button class="btn sm" data-act="give" data-pre="${pre}" data-a="${a.id}" type="button">Jual ke pemain</button></div>
+    ${lvl(a)>0?`<select id="${pre}t${a.id}" aria-label="Isi transfer"><option value="0">Surat tanah saja (rumah hangus)</option><option value="1">Tanah + rumah (rumah ikut pindah)</option></select>`:''}
+    <div class="row"><select id="${pre}m${a.id}" aria-label="Penerima">${live().filter(q=>q.id!==p.id).map(q=>`<option value="${q.id}">${esc(q.name)}</option>`).join('')}</select>
+     <input class="money" id="${pre}h${a.id}" inputmode="numeric" placeholder="Harga (0 = gratis)" aria-label="Harga transfer ke pemain"><button class="btn sm" data-act="give" data-pre="${pre}" data-a="${a.id}" type="button">Transfer ke pemain</button></div>
     <div class="row"><button class="btn sm" data-act="gadai" data-pre="${pre}" data-a="${a.id}" type="button">${a.gadai?'Tebus '+fmt(a.price*.55):'Gadai, terima '+fmt(a.price/2)}</button>
      <button class="btn sm" data-act="del" data-pre="${pre}" data-a="${a.id}" type="button">Hapus catatan</button></div>
    </div></details></div>`).join('')+'</div>'}).join('');
@@ -538,14 +569,15 @@ function renderLog(){
 
 function renderSet(){
  if(document.activeElement&&document.activeElement.closest('#setList'))return;
- $('#setList').innerHTML=S.players.map((p,i)=>`<div class="setp rm"><span class="tok" style="background:${p.color}">${i+1}</span><input id="n${p.id}" value="${esc(p.name)}" maxlength="16" aria-label="Nama pemain ${i+1}"><input type="color" id="c${p.id}" value="${p.color}" aria-label="Warna pemain ${i+1}"><button class="btn sm" type="button" data-act="rmPlayer" data-pid="${p.id}" aria-label="Hapus ${esc(p.name)}" ${S.players.length<=2?'disabled style="opacity:.4"':''}>Hapus</button></div>`).join('');
+ $('#setList').innerHTML=S.players.map((p,i)=>`<div class="setp rm" ${p.out?'style="opacity:.5"':''}><span class="tok" style="background:${p.color}">${i+1}</span><input id="n${p.id}" value="${esc(p.name)}" maxlength="16" aria-label="Nama pemain ${i+1}"><input type="color" id="c${p.id}" value="${p.color}" aria-label="Warna pemain ${i+1}"><button class="btn sm" type="button" data-act="rmPlayer" data-pid="${p.id}" aria-label="Hapus ${esc(p.name)}" ${p.out||live().length<=2?'disabled style="opacity:.4"':''}>${p.out?'Keluar':'Hapus'}</button></div>`).join('');
  const c=S.cfg;setMoney($('#cGaji'),c.gaji);setMoney($('#cPajak'),c.pajak);$('#cBunga').value=c.bunga;$('#cPinjol').checked=c.pinjol!==false}
 
 let armed=0,rm={id:-1,t:0};
+const resetBuy=x=>{const q=x?'x':'a';$('#'+q+'Name').value='';$('#'+q+'Name').hidden=true;$('#'+q+'Kota').value='';setMoney($('#'+q+'Price'),0)};
 document.addEventListener('click',e=>{
  const add=e.target.closest('[data-add]');if(add){const el=$('#'+add.parentElement.dataset.for);setMoney(el,+add.dataset.add?num(el.value)+ +add.dataset.add:0);if(el.id==='tAmt')prev();return}
  const pc=e.target.closest('.pc[data-p]');if(pc){const i=+pc.dataset.p;S.active=UI.from=UI.q=UI.p=UI.a=i;if(UI.to===i)UI.to=GOV;$('#aOwner').value=i;save();render();return}
- const pk=e.target.closest('[data-pick]');if(pk){const k=pk.dataset.pick;UI[k]=val(pk.dataset.v);if(k==='from'&&UI.to===UI.from)UI.to=UI.from===GOV?0:GOV;render();return}
+ const pk=e.target.closest('[data-pick]');if(pk){const k=pk.dataset.pick;UI[k]=val(pk.dataset.v);if(k==='from'&&UI.to===UI.from)UI.to=UI.from===GOV?live()[0].id:GOV;render();return}
  const b=e.target.closest('[data-act]');if(!b)return;const act=b.dataset.act;
  if(act==='startGame'){if(b.disabled)return;if(S&&Date.now()-armed>4000){armed=Date.now();b.textContent='Yakin ganti game? Klik lagi';setTimeout(()=>b.textContent='Mulai main',4000);return}
   armed=0;b.textContent='Mulai main';startGame();return}
@@ -557,41 +589,60 @@ document.addEventListener('click',e=>{
  if(act==='swapDo'){const a=UI.s1,b=UI.s2;if(a===b)return toast('Pilih dua pemain yang berbeda',1);
   const m1=num($('#sM1').value),m2=num($('#sM2').value),L1=sGive(a),L2=sGive(b),A=P(a),B=P(b);
   if(!m1&&!m2&&!L1.length&&!L2.length)return toast('Isi uang atau pilih aset dulu',1);
-  if(A.cash+m2-m1<0)return toast(`Saldo ${A.name} kurang ${fmt(m1-m2-A.cash)}. Jual atau gadai aset dulu.`,1);
-  if(B.cash+m1-m2<0)return toast(`Saldo ${B.name} kurang ${fmt(m2-m1-B.cash)}. Jual atau gadai aset dulu.`,1);
+  const n1=A.cash+m2-m1,n2=B.cash+m1-m2,lo=n1<0?A:n2<0?B:null;
+  if(lo){const ot=lo===A?B:A;if(!bustOk('swap',lo,-(lo===A?n1:n2)))return;
+   snap();const paid=lo.cash;ot.cash+=paid;log('tf',`${lo.name} → ${ot.name} · swap gagal, bayar semua saldo`,paid,[a,b],lo.id);eliminate(lo.id,'saldo kurang saat swap');
+   UI.sel=[];setMoney($('#sM1'),0);setMoney($('#sM2'),0);commit(`${lo.name} bayar semua ${fmt(paid)} dan keluar dari game`+winNote());return}
   snap();A.cash+=m2-m1;B.cash+=m1-m2;L1.forEach(x=>x.owner=b);L2.forEach(x=>x.owner=a);
   log('tf',`${A.name} ⇄ ${B.name} · swap: ${sTxt(m1,L1)} ↔ ${sTxt(m2,L2)}`,Math.abs(m1-m2),[a,b],m1>=m2?a:b);
   UI.sel=[];setMoney($('#sM1'),0);setMoney($('#sM2'),0);commit(`Swap ${A.name} ⇄ ${B.name} selesai`);return}
- if(act==='rmPlayer'){const id=+b.dataset.pid,p=P(id);if(!p)return;if(S.players.length<=2)return toast('Minimal 2 pemain',1);
+ if(act==='rmPlayer'){const id=+b.dataset.pid,p=P(id);if(!p||p.out)return;if(live().length<=2)return toast('Minimal 2 pemain aktif',1);
   if(!(rm.id===id&&Date.now()-rm.t<4000)){rm={id,t:Date.now()};b.textContent='Yakin? Klik lagi';return}
-  rm={id:-1,t:0};snap();S.assets=S.assets.filter(a=>a.owner!==id);S.players=S.players.filter(x=>x.id!==id);
-  log('sys',`${p.name} dihapus dari game (saldo, aset, dan utang ikut hilang)`,0,[],-1);document.activeElement.blur();commit(`${p.name} dihapus`);return}
+  rm={id:-1,t:0};snap();const c0=p.cash;eliminate(id,'dikeluarkan');document.activeElement.blur();commit(`${p.name} dikeluarkan dari game${c0>0?', saldo '+fmt(c0)+' ke Pemerintah':''}`+winNote());return}
  {const id=UI.q,p=P(id);
  if(act==='gaji'){if(!can(GOV,c.gaji))return;snap();move(GOV,id,c.gaji);log('in',`${p.name} lewat Start, terima gaji`,c.gaji,[id],-1);commit(`${p.name} +${fmt(c.gaji)}`)}
- if(act==='pajak'){if(!can(id,c.pajak))return;snap();move(id,GOV,c.pajak);log('out',`${p.name} → Pemerintah · pajak`,c.pajak,[id],id);commit(`${p.name} bayar pajak ${fmt(c.pajak)}`)}
+ if(act==='pajak'){if(!okPay('pajak',id,c.pajak))return;snap();const r=payFrom(id,GOV,c.pajak);log('out',`${p.name} → Pemerintah · pajak${r.bust?' (bayar semua saldo)':''}`,r.paid,[id],id);if(r.bust)eliminate(id,'tidak mampu bayar pajak');
+  commit(r.bust?`${p.name} bayar semua ${fmt(r.paid)} dan keluar dari game`+winNote():`${p.name} bayar pajak ${fmt(r.paid)}`)}
  }
  if(act==='transfer'){if(transfer(UI.from,UI.to,num($('#tAmt').value),$('#tNote').value.trim())){setMoney($('#tAmt'),0);$('#tNote').value='';prev()}}
  {const id=UI.p,p=P(id);
  if(act==='pinjam'){if(c.pinjol===false)return toast('Pinjol sedang dimatikan',1);const amt=num($('#pAmt').value);if(!amt)return toast('Isi jumlah pinjol dulu',1);if(!can(GOV,amt))return;const d=Math.round(amt*(1+c.bunga/100));
   snap();move(GOV,id,amt);p.debt+=d;log('pj',`${p.name} ambil pinjol, utang +${fmt(d)}`,amt,[id],-1);setMoney($('#pAmt'),0);commit(`${p.name} terima ${fmt(amt)}, utang jadi ${fmt(p.debt)}`)}
- if(act==='lunas'){if(!p.debt)return toast(`${p.name} tidak punya utang pinjol`,1);const amt=Math.min(num($('#pAmt').value)||p.debt,p.debt);if(!can(id,amt))return;
-  snap();move(id,GOV,amt);p.debt-=amt;log('pj',`${p.name} → Pemerintah · cicil pinjol${p.debt?'':' (lunas)'}`,amt,[id],id);setMoney($('#pAmt'),0);commit(p.debt?`Sisa utang ${p.name} ${fmt(p.debt)}`:`Pinjol ${p.name} lunas!`)}}
+ if(act==='lunas'){if(!p.debt)return toast(`${p.name} tidak punya utang pinjol`,1);const amt=Math.min(num($('#pAmt').value)||p.debt,p.debt);if(!okPay('lunas',id,amt))return;
+  snap();const r=payFrom(id,GOV,amt);p.debt-=r.paid;log('pj',`${p.name} → Pemerintah · cicil pinjol${r.bust?' (bayar semua saldo)':p.debt?'':' (lunas)'}`,r.paid,[id],id);if(r.bust)eliminate(id,'saldo kurang untuk cicilan pinjol');
+  setMoney($('#pAmt'),0);commit(r.bust?`${p.name} bayar semua ${fmt(r.paid)} dan keluar dari game`+winNote():p.debt?`Sisa utang ${p.name} ${fmt(p.debt)}`:`Pinjol ${p.name} lunas!`)}}
  if(act==='addAsset'){const x=pre==='x',o=x?UI.a:+$('#aOwner').value,name=lok(x?'x':'a'),price=num($(x?'#xPrice':'#aPrice').value),buy=$(x?'#xBuy':'#aBuy').checked;
-  if(!name)return toast('Isi lokasi tanah dulu',1);if(buy&&!can(o,price))return;
-  snap();if(buy)move(o,GOV,price);S.assets.push({id:S.seq++,owner:o,name,level:0,price,gadai:false});
+  if(!name)return toast('Pilih kota atau isi nama petak dulu',1);
+  const dup=S.assets.find(z=>key(z.name)===key(name));if(dup)return toast(`${name} sudah dimiliki ${P(dup.owner).name}. Tanah tidak bisa dibeli dua kali.`,1);
+  if(buy&&!okPay('beli',o,price))return;
+  snap();const r=buy?payFrom(o,GOV,price):{paid:0,bust:false};
+  if(r.bust){log('as',`${P(o).name} gagal beli Tanah ${name}, bayar semua saldo ke Pemerintah`,r.paid,[o],o);eliminate(o,'saldo kurang saat beli tanah');resetBuy(x);commit(`${P(o).name} bayar semua ${fmt(r.paid)} dan keluar dari game`+winNote());return}
+  S.assets.push({id:S.seq++,owner:o,name,level:0,price,land:price,gadai:false});
   log('as',`${P(o).name} ${buy?'beli':'dapat'} Tanah ${name}${buy?' dari Pemerintah':''}`,buy?price:0,[o],buy?o:-1);
-  {const q=x?'x':'a';$('#'+q+'Name').value='';$('#'+q+'Name').hidden=true;$('#'+q+'Kota').value=''}setMoney($(x?'#xPrice':'#aPrice'),0);commit(`Tanah ${name} milik ${P(o).name}`)}
- if(act==='upgrade'){const a=A(),o=a.owner,L=lvl(a),cost=num($('#'+pre+'u'+a.id).value);if(a.gadai)return toast('Tebus gadai dulu sebelum membangun',1);if(L>=2)return;
-  if(!cost)return toast('Isi biaya bangun dulu',1);if(!can(o,cost))return;
-  snap();move(o,GOV,cost);a.level=L+1;a.price+=cost;S.upCost=S.upCost||[];S.upCost[L]=cost;
+  resetBuy(x);commit(`Tanah ${name} milik ${P(o).name}`)}
+ if(act==='upgrade'){const a=A(),o=a.owner,L=lvl(a),cost=num($('#'+pre+'u'+a.id).value),LV=LVn();if(a.gadai)return toast('Tebus gadai dulu sebelum membangun',1);if(L>=maxL())return;
+  if(!cost)return toast('Isi biaya bangun dulu',1);if(!okPay('bangun',o,cost))return;
+  snap();const r=payFrom(o,GOV,cost);
+  if(r.bust){log('as',`${P(o).name} gagal bangun ${LV[L+1]} di ${a.name}, bayar semua saldo`,r.paid,[o],o);eliminate(o,'saldo kurang saat membangun');commit(`${P(o).name} bayar semua ${fmt(r.paid)} dan keluar dari game`+winNote());return}
+  a.level=L+1;a.price+=cost;S.upCost=S.upCost||[];S.upCost[L]=cost;
   log('as',`${P(o).name} bangun ${LV[L+1]} di ${a.name}`,cost,[o],o);$('#'+pre+'u'+a.id).value='';commit(`${a.name} naik jadi ${LV[L+1]}`)}
  if(act==='sell'){const a=A(),amt=num($('#'+pre+'s'+a.id).value),o=a.owner,get=a.gadai?Math.max(0,amt-Math.round(a.price*.55)):amt;if(!amt)return toast('Isi harga jual dulu',1);if(!can(GOV,get))return;
   snap();move(GOV,o,get);S.assets=S.assets.filter(x=>x!==a);
   log('as',`${P(o).name} jual ${a.name} ke Pemerintah${a.gadai?' (dipotong tebus gadai)':''}`,get,[o],-1);commit(`${a.name} terjual, ${P(o).name} +${fmt(get)}${a.gadai&&amt<Math.round(a.price*.55)?' (harga di bawah tebus gadai)':''}`)}
- if(act==='give'){const a=A(),to=+$('#'+pre+'m'+a.id).value,amt=num($('#'+pre+'h'+a.id).value),o=a.owner;if(amt&&!can(to,amt))return;
-  snap();if(amt)move(to,o,amt);a.owner=to;log('as',`${P(o).name} jual ${a.name} ke ${P(to).name}`,amt,[o,to],to);$('#'+pre+'h'+a.id).value='';commit(`${a.name} sekarang milik ${P(to).name}`)}
+ if(act==='give'){const a=A(),to=+$('#'+pre+'m'+a.id).value,amt=num($('#'+pre+'h'+a.id).value),o=a.owner,T=P(to);
+  if(a.gadai)return toast('Tebus gadai dulu sebelum transfer',1);if(!T||T.out)return toast('Pilih penerima dulu',1);
+  const had=lvl(a)>0,tsel=$('#'+pre+'t'+a.id),keepH=had&&tsel&&tsel.value==='1',burn=had&&!keepH;
+  if(amt&&!okPay('give',to,amt))return;
+  snap();
+  if(amt&&amt>T.cash){const paid=T.cash;P(o).cash+=paid;log('as',`${T.name} gagal beli ${a.name} dari ${P(o).name}, bayar semua saldo`,paid,[o,to],to);eliminate(to,'saldo kurang saat membeli aset');commit(`${T.name} bayar semua ${fmt(paid)} dan keluar dari game`+winNote());return}
+  if(amt)move(to,o,amt);
+  a.owner=to;if(burn){a.level=0;a.price=a.land}
+  log('as',`${P(o).name} transfer ${a.name} ${burn?'(surat tanah, rumah hangus)':had?'(tanah + rumah)':'(surat tanah)'} ke ${T.name}`,amt,[o,to],to);
+  const hi=$('#'+pre+'h'+a.id);if(hi)hi.value='';commit(`${a.name} sekarang milik ${T.name}${burn?'. Rumah hangus.':''}`)}
  if(act==='gadai'){const a=A(),o=a.owner;
-  if(a.gadai){const t=Math.round(a.price*.55);if(!can(o,t))return;snap();move(o,GOV,t);a.gadai=false;log('as',`${P(o).name} tebus gadai ${a.name}`,t,[o],o);commit(`${a.name} ditebus`)}
+  if(a.gadai){const t=Math.round(a.price*.55);if(!okPay('tebus',o,t))return;snap();const r=payFrom(o,GOV,t);
+   if(r.bust){log('as',`${P(o).name} gagal tebus gadai ${a.name}, bayar semua saldo`,r.paid,[o],o);eliminate(o,'saldo kurang saat tebus gadai');commit(`${P(o).name} bayar semua ${fmt(r.paid)} dan keluar dari game`+winNote());return}
+   a.gadai=false;log('as',`${P(o).name} tebus gadai ${a.name}`,t,[o],o);commit(`${a.name} ditebus`)}
   else{const g=Math.round(a.price/2);if(!can(GOV,g))return;snap();move(GOV,o,g);a.gadai=true;log('as',`${P(o).name} gadai ${a.name} ke Pemerintah`,g,[o],-1);commit(`${P(o).name} +${fmt(g)} dari gadai`)}}
  if(act==='del'){const a=A();snap();S.assets=S.assets.filter(x=>x!==a);log('as',`Catatan ${a.name} dihapus`,0,[a.owner],-1);commit('Catatan aset dihapus')}
  if(act==='saveSet'){snap();S.players.forEach(q=>{q.name=$('#n'+q.id).value.trim()||'Pemain '+(q.id+1);q.color=$('#c'+q.id).value});document.activeElement.blur();commit('Nama & warna disimpan')}
@@ -600,7 +651,7 @@ document.addEventListener('click',e=>{
 });
 $('#lFilter').addEventListener('change',()=>S&&renderLog());
 $('#undoBtn').addEventListener('click',undo);$('#tUndo').addEventListener('click',undo);
-function route(){let v=(location.hash||'').slice(1);if(!['home','bank','aset','pinjol','riwayat','atur'].includes(v))v=S?'bank':'home';if(!S)v='home';if(v==='pinjol'&&$('#tabPinjol').hidden)v='bank';if(v==='aset'&&$('#tabAset').hidden)v='bank';
+function route(){let v=(location.hash||'').slice(1);if(!['home','bank','swap','aset','pinjol','riwayat','atur'].includes(v))v=S?'bank':'home';if(!S)v='home';if(v==='pinjol'&&$('#tabPinjol').hidden)v='bank';if(v==='aset'&&$('#tabAset').hidden)v='bank';
  document.body.classList.toggle('at-home',v==='home');
  $$('[data-view]').forEach(s=>s.classList.toggle('on',s.dataset.view===v));$$('.tabs a').forEach(a=>a.classList.toggle('on',a.dataset.tab===v));
  if(v==='home')homeSum()}
